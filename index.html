@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>מה יש היום בטלויזיה?</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Alef:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style type="text/css">
+      html,
+      body {
+        font-family: 'Alef', sans-serif;
+        margin: 0;
+      }
+
+      body {
+        min-height: 100vh;
+        background: url(/static/pop-corn.png) no-repeat;
+        background-position: bottom 20px left;
+        background-size: 141px;
+        min-height: 100vh;
+      }
+
+      h1 {
+        display: inline-block;
+        background: linear-gradient(90deg, #ffc000 0%, #bfff00 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin: 0;
+      }
+
+      #app {
+        display: flex;
+        flex-wrap: wrap;
+        max-width: 1280px;
+        margin: auto;
+      }
+
+      .title {
+        text-align: center;
+        background: linear-gradient(45deg, #0063f2, #04446e);
+      }
+
+      #app > * {
+        flex: 0 0 100%;
+        padding: 0 20px;
+        box-sizing: border-box;
+      }
+
+      #app > div {
+        padding: 20px;
+      }
+
+      #app > div p {
+        color: #7a7a7a;
+        font-size: 14px;
+        text-overflow: ellipsis;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        display: -webkit-box;
+      }
+
+      #app > div:not(:first-child):nth-child(even) {
+        background: #f5f5f5;
+      }
+
+      .channel-image {
+        height: 28px;
+        width: 28px;
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        display: inline-block;
+        background-size: cover;
+        border-radius: 50%;
+        box-shadow: 0 0 6px #6d6d6d;
+      }
+
+      .channel-title {
+        gap: 14px;
+        display: flex;
+        align-items: center;
+      }
+
+      .channel-title h2 {
+        margin: 0;
+        font-size: 18px;
+      }
+
+      .channel-title h2 span {
+        font-weight: 400;
+        color: #0075ef;
+      }
+
+      .credit {
+        text-align: center;
+        font-size: 12px;
+        color: #6d6d6d;
+        text-decoration: none;
+        position: absolute;
+        bottom: 5px;
+        left: 0;
+        right: 0;
+      }
+
+      .credit:hover {
+        color: #6d6d6d;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <div class="title">
+        <h1>מה יש היום בטלויזיה?</h1>
+      </div>
+    </div>
+
+    <script>
+      (async () => {
+        const shows = await fetch('/schedule.json');
+        const showsJson = await shows.json();
+
+        for (const show of showsJson) {
+          const showElement = document.createElement('div');
+          showElement.innerHTML = `
+          <div class="channel-title">
+            <div class="channel-image" style="background-image: url('/static/${show.channel}.png');"></div>
+            <h2>
+              <span>${show.time} | </span>
+              ${show.name}
+            </h2>
+          </div>
+          <p>${show.description}</p>
+        `;
+          document.getElementById('app').appendChild(showElement);
+        }
+
+        const creditElement = document.createElement('a');
+        creditElement.href = 'https://www.flaticon.com/free-icons/pop-corn';
+        creditElement.title = 'pop corn icons';
+        creditElement.innerHTML =
+          'Pop corn icons created by Freepik - Flaticon';
+        creditElement.classList.add('credit');
+        document.getElementById('app').appendChild(creditElement);
+      })();
+    </script>
+  </body>
+</html>
