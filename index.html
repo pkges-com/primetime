@@ -7,6 +7,7 @@
     <title>מה יש היום בטלויזיה?</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="manifest" href="/manifest.json" />
     <link
       href="https://fonts.googleapis.com/css2?family=Alef:wght@400;700&display=swap"
       rel="stylesheet"
@@ -21,7 +22,7 @@
       body {
         min-height: 100vh;
         background: url(/static/pop-corn.png) no-repeat;
-        background-position: bottom 20px left;
+        background-position: bottom 150px left;
         background-size: 141px;
         min-height: 100vh;
       }
@@ -44,6 +45,11 @@
       .title {
         text-align: center;
         background: linear-gradient(45deg, #0063f2, #04446e);
+      }
+
+      .title h2 {
+        color: white;
+        font-weight: 400;
       }
 
       #app > * {
@@ -118,11 +124,18 @@
     <div id="app">
       <div class="title">
         <h1>מה יש היום בטלויזיה?</h1>
+        <h2 class="today">יום ו׳</h2>
       </div>
     </div>
 
     <script>
       (async () => {
+        // update today
+        const today = new Date().getDay();
+        const days = ['א', 'ב', 'ג', 'ד', 'ה', 'ו', 'ש'];
+        document.querySelector('.today').innerHTML = `יום ${days[today]}'`;
+
+        // update shows
         const shows = await fetch('/schedule.json');
         const showsJson = await shows.json();
 
@@ -136,7 +149,6 @@
               ${show.name}
             </h2>
           </div>
-          <p>${show.description}</p>
         `;
           document.getElementById('app').appendChild(showElement);
         }
