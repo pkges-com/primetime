@@ -160,6 +160,11 @@
           'Pop corn icons created by Freepik - Flaticon';
         creditElement.classList.add('credit');
         document.getElementById('app').appendChild(creditElement);
+
+        // register service worker
+        if ('serviceWorker' in navigator) {
+          navigator.serviceWorker.register('/sw.js');
+        }
       })();
     </script>
   </body>
