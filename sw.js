@@ -1,6 +1,6 @@
-const CACHE_NAME = 'my-cache';
+const cacheName = 'my-cache';
 
-const urlsToCache = [
+const precachedAssets = [
   '/',
   '/index.html',
   '/offline.html',
@@ -12,49 +12,23 @@ const urlsToCache = [
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return Promise.all(
-        urlsToCache.map((url) => {
-          return cache.add(url).catch((reason) => {
-            return console.log(`Failed to cache: ${url}, ${reason}`);
-          });
-        })
-      );
+    caches.open(cacheName).then((cache) => {
+      return cache.addAll(precachedAssets);
     })
   );
 });
 
 self.addEventListener('fetch', (event) => {
-  event.respondWith(
-    caches.match(event.request).then((response) => {
-      if (response) {
-        return response;
-      }
+  const url = new URL(event.request.url);
+  const isPrecachedRequest = precachedAssets.includes(url.pathname);
 
-      // If not found in cache, fetch from network and cache for future use
-      return fetch(event.request)
-        .then((response) => {
-          // Cache only successful responses
-          if (
-            !response ||
-            response.status !== 200 ||
-            response.type !== 'basic'
-          ) {
-            return response;
-          }
-
-          const responseToCache = response.clone();
-
-          caches
-            .open(CACHE_NAME)
-            .then((cache) => cache.put(event.request, responseToCache));
-
-          return response;
-        })
-        .catch(() => {
-          // Return offline page or fallback if network request fails
-          return caches.match('/offline.html');
-        });
-    })
-  );
+  if (isPrecachedRequest) {
+    event.respondWith(
+      caches.open(cacheName).then((cache) => {
+        return cache.match(event.request.url);
+      })
+    );
+  } else {
+    return;
+  }
 });
