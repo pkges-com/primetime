@@ -2,6 +2,9 @@
     "name": "מה יש היום בטלויזיה?",
     "theme_color": "#034c8e",
     "background_color": "#034c8e",
+    "display": "standalone",
+    "scope": "/",
+    "start_url": "/",
     "icons": [
         {
             "src": "static/pop-corn.png",
