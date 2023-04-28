@@ -1,3 +1,13 @@
+const CACHE_NAME = 'my-cache';
+
+const urlsToCache = ['/', '/index.html', '/static/*.png'];
+
+self.addEventListener('install', (event) => {
+  event.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(urlsToCache))
+  );
+});
+
 self.addEventListener('fetch', (event) => {
   event.respondWith(
     caches.match(event.request).then((response) => {
@@ -26,8 +36,8 @@ self.addEventListener('fetch', (event) => {
           return response;
         })
         .catch(() => {
-          // Return cached index.html as fallback if network request fails
-          return caches.match('/index.html');
+          // Return offline page or fallback if network request fails
+          return caches.match('/offline.html');
         });
     })
   );
