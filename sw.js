@@ -1,10 +1,24 @@
 const CACHE_NAME = 'my-cache';
 
-const urlsToCache = ['/', '/index.html', '/static/*.png'];
+const urlsToCache = [
+  '/',
+  '/index.html',
+  '/offline.html',
+  '/static/11.png',
+  '/static/12.png',
+  '/static/13.png',
+  '/static/pop-corn.png',
+];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(urlsToCache))
+    caches.open(CACHE_NAME).then((cache) => {
+      return cache.addAll(
+        urlsToCache.map(
+          (url) => new Request(url, { credentials: 'same-origin' })
+        )
+      );
+    })
   );
 });
 
