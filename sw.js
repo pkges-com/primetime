@@ -13,10 +13,12 @@ const urlsToCache = [
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(
-        urlsToCache.map(
-          (url) => new Request(url, { credentials: 'same-origin' })
-        )
+      return Promise.all(
+        urlsToCache.map((url) => {
+          return cache.add(url).catch((reason) => {
+            return console.log(`Failed to cache: ${url}, ${reason}`);
+          });
+        })
       );
     })
   );
